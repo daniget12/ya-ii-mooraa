@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const name = document.getElementById('name').value;
         const phone = document.getElementById('phone').value;
         const college = document.getElementById('college').value;
+        const gender = document.getElementById('gender').value;
+        const department = document.getElementById('department').value;
 
         // Visual feedback
         const submitBtn = form.querySelector('button[type="submit"]');
@@ -30,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ name, phone, college })
+                body: JSON.stringify({ name, phone, college, gender, department })
             });
 
             if (response.ok) {
@@ -74,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         doc.text(`Total Registered: ${participantsData.length}`, 14, 36);
 
         // Prepare table data
-        const tableColumn = ["#", "Name", "Phone Number", "College"];
+        const tableColumn = ["#", "Name", "Phone Number", "Gender", "Department", "College"];
         const tableRows = [];
 
         participantsData.forEach((participant, index) => {
@@ -82,6 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 index + 1,
                 participant.name,
                 participant.phone,
+                participant.gender || 'N/A',
+                participant.department || 'N/A',
                 formatCollege(participant.college)
             ];
             tableRows.push(participantData);
@@ -135,6 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${index + 1}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${escapeHTML(p.name)}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 font-mono">${escapeHTML(p.phone)}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${escapeHTML(p.gender || 'N/A')}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${escapeHTML(p.department || 'N/A')}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-medium rounded-full ${getCollegeBadgeColor(p.college)}">
                         ${escapeHTML(formatCollege(p.college))}

@@ -16,9 +16,16 @@ if (process.env.POSTGRES_URL || process.env.DATABASE_URL) {
             name VARCHAR(255) NOT NULL,
             phone VARCHAR(50) NOT NULL,
             college VARCHAR(100) NOT NULL,
+            gender VARCHAR(50),
+            department VARCHAR(255),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     `).catch(err => console.error("Error creating table:", err));
+
+    pool.query(`
+        ALTER TABLE participants ADD COLUMN IF NOT EXISTS gender VARCHAR(50);
+        ALTER TABLE participants ADD COLUMN IF NOT EXISTS department VARCHAR(255);
+    `).catch(err => console.error("Error altering table:", err));
 }
 
 module.exports = async function(req, res) {
@@ -47,7 +54,7 @@ module.exports = async function(req, res) {
     }
 
     if (req.method === 'POST') {
-        const { name, phone, college } = req.body || {};
+        const { name, phone, college, gender, department } = req.body || {};
         
         if (!name || !phone || !college) {
             return res.status(400).json({ error: 'Please provide name, phone, and college' });
@@ -59,8 +66,8 @@ module.exports = async function(req, res) {
             }
 
             const result = await pool.query(
-                'INSERT INTO participants (name, phone, college) VALUES ($1, $2, $3) RETURNING *',
-                [name, phone, college]
+                'INSERT INTO participants (name, phone, college, gender, department) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+                [name, phone, college, gender, department]
             );
             return res.status(200).json({ message: 'success', data: result.rows[0] });
         } catch (err) {

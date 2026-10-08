@@ -23,9 +23,16 @@ if (process.env.POSTGRES_URL || process.env.DATABASE_URL) {
             name VARCHAR(255) NOT NULL,
             phone VARCHAR(50) NOT NULL,
             college VARCHAR(100) NOT NULL,
+            gender VARCHAR(50),
+            department VARCHAR(255),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     `).catch(err => console.error("Error creating table:", err));
+
+    pool.query(`
+        ALTER TABLE participants ADD COLUMN IF NOT EXISTS gender VARCHAR(50);
+        ALTER TABLE participants ADD COLUMN IF NOT EXISTS department VARCHAR(255);
+    `).catch(err => console.error("Error altering table:", err));
 }
 
 app.get('/api/participants', async (req, res) => {
@@ -42,7 +49,7 @@ app.get('/api/participants', async (req, res) => {
 });
 
 app.post('/api/participants', async (req, res) => {
-    const { name, phone, college } = req.body;
+    const { name, phone, college, gender, department } = req.body;
     
     if (!name || !phone || !college) {
         return res.status(400).json({ error: 'Please provide name, phone, and college' });
@@ -54,12 +61,37 @@ app.post('/api/participants', async (req, res) => {
         }
 
         const result = await pool.query(
-            'INSERT INTO participants (name, phone, college) VALUES ($1, $2, $3) RETURNING *',
-            [name, phone, college]
+            'INSERT INTO participants (name, phone, college, gender, department) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [name, phone, college, gender, department]
         );
         res.json({ message: 'success', data: result.rows[0] });
     } catch (err) {
         console.error("POST Error:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Admin endpoints
+app.delete('/api/participants/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await pool.query('DELETE FROM participants WHERE id = $1', [id]);
+        res.json({ message: 'Deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.put('/api/participants/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, phone, college, gender, department } = req.body;
+        await pool.query(
+            'UPDATE participants SET name = $1, phone = $2, college = $3, gender = $4, department = $5 WHERE id = $6',
+            [name, phone, college, gender, department, id]
+        );
+        res.json({ message: 'Updated successfully' });
+    } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
@@ -72,3 +104,4 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Export the app for Vercel's serverless builder
 module.exports = app;
+
