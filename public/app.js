@@ -147,8 +147,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Helper functions
     function formatCollege(college) {
-        if (college === '4kilo') return '4 Kilo';
-        if (college === '5kilo') return '5 Kilo';
+        if (college === '4kilo') return '4 kilo (CNCS)';
+        if (college === '5kilo') return '5 kilo(CTBE)';
         if (college === '6kilo') return '6 Kilo';
         return college;
     }
