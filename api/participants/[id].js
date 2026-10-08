@@ -37,10 +37,10 @@ module.exports = async function(req, res) {
 
     if (req.method === 'PUT') {
         try {
-            const { name, phone, college, gender, department } = req.body || {};
+            const { name, phone, college, gender, department, year } = req.body || {};
             await pool.query(
-                'UPDATE participants SET name = $1, phone = $2, college = $3, gender = $4, department = $5 WHERE id = $6',
-                [name, phone, college, gender, department, id]
+                'UPDATE participants SET name = $1, phone = $2, college = $3, gender = $4, department = $5, year = $6 WHERE id = $7',
+                [name, phone, college, gender, department, year, id]
             );
             return res.status(200).json({ message: 'Updated successfully' });
         } catch (err) {

@@ -106,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 font-mono">${escapeHTML(p.phone)}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${escapeHTML(p.gender || 'N/A')}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${escapeHTML(p.department || 'N/A')}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${escapeHTML(p.year || 'N/A')}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-medium rounded-full bg-gray-100 text-gray-800">
                         ${escapeHTML(formatCollege(p.college))}
@@ -156,6 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('editPhone').value = p.phone || '';
         document.getElementById('editGender').value = p.gender || 'Male';
         document.getElementById('editDepartment').value = p.department || '';
+        document.getElementById('editYear').value = p.year || '1st Year';
         document.getElementById('editCollege').value = p.college || '4kilo';
         
         editModal.classList.remove('hidden');
@@ -174,6 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
             phone: document.getElementById('editPhone').value,
             gender: document.getElementById('editGender').value,
             department: document.getElementById('editDepartment').value,
+            year: document.getElementById('editYear').value,
             college: document.getElementById('editCollege').value,
         };
 
@@ -217,3 +220,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     refreshBtn.addEventListener('click', fetchParticipants);
 });
+

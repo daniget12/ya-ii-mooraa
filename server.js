@@ -25,6 +25,7 @@ if (process.env.POSTGRES_URL || process.env.DATABASE_URL) {
             college VARCHAR(100) NOT NULL,
             gender VARCHAR(50),
             department VARCHAR(255),
+            year VARCHAR(50),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     `).catch(err => console.error("Error creating table:", err));
@@ -32,6 +33,7 @@ if (process.env.POSTGRES_URL || process.env.DATABASE_URL) {
     pool.query(`
         ALTER TABLE participants ADD COLUMN IF NOT EXISTS gender VARCHAR(50);
         ALTER TABLE participants ADD COLUMN IF NOT EXISTS department VARCHAR(255);
+        ALTER TABLE participants ADD COLUMN IF NOT EXISTS year VARCHAR(50);
     `).catch(err => console.error("Error altering table:", err));
 }
 
@@ -49,7 +51,7 @@ app.get('/api/participants', async (req, res) => {
 });
 
 app.post('/api/participants', async (req, res) => {
-    const { name, phone, college, gender, department } = req.body;
+    const { name, phone, college, gender, department, year } = req.body;
     
     if (!name || !phone || !college) {
         return res.status(400).json({ error: 'Please provide name, phone, and college' });
@@ -61,8 +63,8 @@ app.post('/api/participants', async (req, res) => {
         }
 
         const result = await pool.query(
-            'INSERT INTO participants (name, phone, college, gender, department) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-            [name, phone, college, gender, department]
+            'INSERT INTO participants (name, phone, college, gender, department, year) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+            [name, phone, college, gender, department, year]
         );
         res.json({ message: 'success', data: result.rows[0] });
     } catch (err) {
@@ -102,10 +104,10 @@ app.put('/api/participants/:id', async (req, res) => {
 
     try {
         const { id } = req.params;
-        const { name, phone, college, gender, department } = req.body;
+        const { name, phone, college, gender, department, year } = req.body;
         await pool.query(
-            'UPDATE participants SET name = $1, phone = $2, college = $3, gender = $4, department = $5 WHERE id = $6',
-            [name, phone, college, gender, department, id]
+            'UPDATE participants SET name = $1, phone = $2, college = $3, gender = $4, department = $5, year = $6 WHERE id = $7',
+            [name, phone, college, gender, department, year, id]
         );
         res.json({ message: 'Updated successfully' });
     } catch (err) {
@@ -121,4 +123,5 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Export the app for Vercel's serverless builder
 module.exports = app;
+
 

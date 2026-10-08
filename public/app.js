@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const college = document.getElementById('college').value;
         const gender = document.getElementById('gender').value;
         const department = document.getElementById('department').value;
+        const year = document.getElementById('year').value;
 
         // Visual feedback
         const submitBtn = form.querySelector('button[type="submit"]');
@@ -32,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ name, phone, college, gender, department })
+                body: JSON.stringify({ name, phone, college, gender, department, year })
             });
 
             if (response.ok) {
@@ -76,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         doc.text(`Total Registered: ${participantsData.length}`, 14, 36);
 
         // Prepare table data
-        const tableColumn = ["#", "Name", "Phone Number", "Gender", "Department", "College"];
+        const tableColumn = ["#", "Name", "Phone Number", "Gender", "Department", "Year", "College"];
         const tableRows = [];
 
         participantsData.forEach((participant, index) => {
@@ -86,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 participant.phone,
                 participant.gender || 'N/A',
                 participant.department || 'N/A',
+                participant.year || 'N/A',
                 formatCollege(participant.college)
             ];
             tableRows.push(participantData);
@@ -116,17 +118,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 participantsData = result.data;
                 renderTable(participantsData);
             } else {
-                tableBody.innerHTML = `<tr><td colspan="4" class="px-6 py-4 text-center text-red-500">Error loading data from server.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="7" class="px-6 py-4 text-center text-red-500">Error loading data from server.</td></tr>`;
             }
         } catch (error) {
-            tableBody.innerHTML = `<tr><td colspan="4" class="px-6 py-4 text-center text-red-500">Server offline or connection error.</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="7" class="px-6 py-4 text-center text-red-500">Server offline or connection error.</td></tr>`;
         }
     }
 
     // Render table rows
     function renderTable(data) {
         if (data.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="4" class="px-6 py-12 text-center text-gray-500">No participants registered yet.</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="7" class="px-6 py-12 text-center text-gray-500">No participants registered yet.</td></tr>`;
             return;
         }
 
@@ -141,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 font-mono">${escapeHTML(p.phone)}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${escapeHTML(p.gender || 'N/A')}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${escapeHTML(p.department || 'N/A')}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${escapeHTML(p.year || 'N/A')}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-medium rounded-full ${getCollegeBadgeColor(p.college)}">
                         ${escapeHTML(formatCollege(p.college))}
@@ -187,3 +190,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 4000);
     }
 });
+

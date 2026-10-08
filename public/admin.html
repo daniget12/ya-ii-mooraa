@@ -51,13 +51,14 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Phone</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Gender</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Department</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Year</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">College</th>
                             <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-gray-600 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="adminTableBody" class="bg-white divide-y divide-gray-200">
                         <tr>
-                            <td colspan="6" class="px-6 py-8 text-center text-gray-500">Loading...</td>
+                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">Loading...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -89,6 +90,18 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Department</label>
                     <input type="text" id="editDepartment" required class="w-full border border-gray-300 rounded p-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Year</label>
+                    <select id="editYear" required class="w-full border border-gray-300 rounded p-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        <option value="1st Year">1st Year</option>
+                        <option value="2nd Year">2nd Year</option>
+                        <option value="3rd Year">3rd Year</option>
+                        <option value="4th Year">4th Year</option>
+                        <option value="5th Year">5th Year</option>
+                        <option value="6th Year">6th Year</option>
+                        <option value="Masters/PhD">Masters/PhD</option>
+                    </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">College</label>
