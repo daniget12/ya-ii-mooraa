@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gibi Gubae Participants</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 md:p-8">
+    <div class="max-w-5xl mx-auto space-y-6">
+        
+        <!-- Header -->
+        <header class="bg-white rounded-lg shadow p-6 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">Gibi Gubae</h1>
+                <p class="text-gray-500 text-sm">Participant Registration System</p>
+            </div>
+            <button id="downloadPdfBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+                Download PDF
+            </button>
+        </header>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Add Participant Form -->
+            <div class="lg:col-span-1 bg-white rounded-lg shadow p-6 h-fit">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Add New Member</h2>
+                <form id="addParticipantForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="name">Full Name</label>
+                        <input type="text" id="name" required placeholder="e.g. Abebe Kebede" class="w-full border border-gray-300 rounded-md shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="phone">Phone Number</label>
+                        <input type="tel" id="phone" required placeholder="e.g. 0911..." class="w-full border border-gray-300 rounded-md shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="college">College</label>
+                        <select id="college" required class="w-full border border-gray-300 rounded-md shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                            <option value="" disabled selected>Select a college</option>
+                            <option value="4kilo">4 Kilo (Science & Tech)</option>
+                            <option value="5kilo">5 Kilo (Technology)</option>
+                            <option value="6kilo">6 Kilo (Main Campus)</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-4 rounded shadow transition mt-4">
+                        Register Member
+                    </button>
+                    <p id="formMessage" class="text-sm text-center hidden mt-2 font-medium"></p>
+                </form>
+            </div>
+
+            <!-- Participants List -->
+            <div class="lg:col-span-2 bg-white rounded-lg shadow overflow-hidden flex flex-col">
+                <div class="p-6 border-b">
+                    <h2 class="text-xl font-semibold text-gray-800">Participants List</h2>
+                    <p class="text-sm text-gray-500 mt-1">Live updates of registered members</p>
+                </div>
+                
+                <div class="overflow-x-auto flex-1">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">#</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Name</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Phone</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">College</th>
+                            </tr>
+                        </thead>
+                        <tbody id="participantsTableBody" class="bg-white divide-y divide-gray-200">
+                            <!-- Rows will be injected here by JS -->
+                            <tr>
+                                <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+                                    <div class="flex justify-center items-center space-x-2">
+                                        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                                        <span>Loading participants...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
