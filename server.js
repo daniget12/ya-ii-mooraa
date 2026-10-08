@@ -8,10 +8,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve static files when not in production (Vercel serves public/ automatically)
-if (process.env.NODE_ENV !== 'production') {
-    app.use(express.static(path.join(__dirname, 'public')));
-}
+// Serve static files unconditionally so Vercel can display the frontend
+app.use(express.static(path.join(__dirname, 'public')));
 
 const pool = new Pool({
   connectionString: process.env.POSTGRES_URL || process.env.DATABASE_URL,
