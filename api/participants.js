@@ -1,3 +1,6 @@
+// Force bypass SSL certificate errors for Supabase connection
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 const { Pool } = require('pg');
 
 const pool = new Pool({
