@@ -6,7 +6,52 @@ document.addEventListener('DOMContentLoaded', () => {
     const editForm = document.getElementById('editForm');
     const cancelEdit = document.getElementById('cancelEdit');
     
+    const loginOverlay = document.getElementById('loginOverlay');
+    const adminContent = document.getElementById('adminContent');
+    const loginForm = document.getElementById('loginForm');
+    const loginError = document.getElementById('loginError');
+
     let participants = [];
+    let currentPassword = localStorage.getItem('adminPassword') || '';
+
+    if (currentPassword) {
+        verifyPassword(currentPassword);
+    }
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const pwd = document.getElementById('adminPassword').value;
+        const btn = loginForm.querySelector('button');
+        btn.innerText = 'Checking...';
+        btn.disabled = true;
+        await verifyPassword(pwd);
+        btn.innerText = 'Login';
+        btn.disabled = false;
+    });
+
+    async function verifyPassword(pwd) {
+        try {
+            const res = await fetch('/api/auth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: pwd })
+            });
+            if (res.ok) {
+                currentPassword = pwd;
+                localStorage.setItem('adminPassword', pwd);
+                loginOverlay.classList.add('hidden');
+                adminContent.classList.remove('hidden');
+                fetchParticipants();
+            } else {
+                loginError.classList.remove('hidden');
+                localStorage.removeItem('adminPassword');
+                loginOverlay.classList.remove('hidden');
+                adminContent.classList.add('hidden');
+            }
+        } catch(err) {
+            alert('Error verifying password');
+        }
+    }
 
     // Helper to properly display strings
     function escapeHTML(str) {
@@ -87,11 +132,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!confirm('Are you sure you want to delete this participant?')) return;
         
         try {
-            // Support both server.js routing (/api/participants/:id) and Vercel routing (/api/participants?id=X)
-            const response = await fetch(`/api/participants/${id}`, { method: 'DELETE' });
+            const headers = { 'x-admin-password': currentPassword };
+            const response = await fetch(`/api/participants/${id}`, { method: 'DELETE', headers });
             if (!response.ok && response.status === 404) {
-                // Try Vercel style query route if /:id failed
-                await fetch(`/api/participants?id=${id}`, { method: 'DELETE' });
+                const res2 = await fetch(`/api/participants?id=${id}`, { method: 'DELETE', headers });
+                if (!res2.ok && res2.status === 401) { alert('Unauthorized'); return; }
+            } else if (!response.ok && response.status === 401) {
+                alert('Unauthorized');
+                return;
             }
             fetchParticipants();
         } catch (error) {
@@ -134,15 +182,19 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.disabled = true;
 
         try {
+            const headers = { 
+                'Content-Type': 'application/json',
+                'x-admin-password': currentPassword
+            };
             let response = await fetch(`/api/participants/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers,
                 body: JSON.stringify(payload)
             });
             if (!response.ok && response.status === 404) {
                  response = await fetch(`/api/participants?id=${id}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers,
                     body: JSON.stringify(payload)
                 });
             }
@@ -150,6 +202,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 editModal.classList.add('hidden');
                 fetchParticipants();
+            } else if (response.status === 401) {
+                alert('Unauthorized');
             } else {
                 alert('Failed to save changes.');
             }
@@ -162,7 +216,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     refreshBtn.addEventListener('click', fetchParticipants);
-
-    // Initial load
-    fetchParticipants();
 });

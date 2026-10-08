@@ -71,8 +71,22 @@ app.post('/api/participants', async (req, res) => {
     }
 });
 
+// Admin Auth Endpoint
+app.post('/api/auth', (req, res) => {
+    const { password } = req.body;
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    if (password === adminPassword) {
+        res.json({ success: true });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
 // Admin endpoints
 app.delete('/api/participants/:id', async (req, res) => {
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    if (req.headers['x-admin-password'] !== adminPassword) return res.status(401).json({ error: 'Unauthorized' });
+
     try {
         const { id } = req.params;
         await pool.query('DELETE FROM participants WHERE id = $1', [id]);
@@ -83,6 +97,9 @@ app.delete('/api/participants/:id', async (req, res) => {
 });
 
 app.put('/api/participants/:id', async (req, res) => {
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    if (req.headers['x-admin-password'] !== adminPassword) return res.status(401).json({ error: 'Unauthorized' });
+
     try {
         const { id } = req.params;
         const { name, phone, college, gender, department } = req.body;

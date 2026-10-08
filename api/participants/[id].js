@@ -19,6 +19,11 @@ module.exports = async function(req, res) {
         return;
     }
 
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    if (req.headers['x-admin-password'] !== adminPassword) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
     const { id } = req.query;
 
     if (req.method === 'DELETE') {
